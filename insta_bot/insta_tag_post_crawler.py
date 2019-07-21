@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
 import time, argparse, ast
 
 
@@ -6,10 +7,10 @@ SCROLL_DOWN = "window.scrollTo(0, document.body.scrollHeight)"
 
 
 class InstaTagPostCrawler:
-    def __init__(self, tags, num_of_posts):
+    def __init__(self, tags, num_of_posts, driver):
         self.tags = tags
         self.num_of_posts = num_of_posts
-        self.driver = webdriver.Firefox()
+        self.driver = driver
 
     def crawl(self):
         posts = set()
@@ -25,14 +26,18 @@ class InstaTagPostCrawler:
         time.sleep(3)  # wait for page to load
         posts = set()
         for _ in range(1000): # scroll to "infinity"
+            prev_len = len(posts)
             driver.execute_script(SCROLL_DOWN)
             time.sleep(1)
             post_list = self.get_post_list()
             for post in post_list:
                 if post not in posts:
                     posts.update([post])
-            if len(posts) > self.num_of_posts:
+            if len(posts) > self.num_of_posts or len(posts) == prev_len:
                 break
+        # reduce size to required number
+        while len(posts) > self.num_of_posts:
+            posts.pop()
         return posts
 
     def get_post_list(self):
@@ -60,7 +65,10 @@ def read_args():
     return args["tag_list"], args["num_of_posts"]
 
 if __name__ == "__main__":
+    options = Options()
+    options.headless = True
+    driver = webdriver.Firefox(options=options)
     tag_list_str, num_of_posts_str = read_args()
-    crawler = InstaTagPostCrawler(ast.literal_eval(tag_list_str), int(num_of_posts_str))
+    crawler = InstaTagPostCrawler(ast.literal_eval(tag_list_str), int(num_of_posts_str), driver)
     print(crawler.crawl())
     

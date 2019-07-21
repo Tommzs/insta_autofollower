@@ -32,3 +32,4 @@ SELECT_MENU ="""
             """
 
 MAX_POSTS = 1000
+MAX_USERS = 1000

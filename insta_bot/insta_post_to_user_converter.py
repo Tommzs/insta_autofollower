@@ -1,6 +1,10 @@
 from selenium import webdriver
 import time, argparse, ast
-import element_classes as el
+if __name__ == '__main__':
+    import element_classes as el
+else:
+    from . import element_classes as el
+
 
 class InstaPostToUserConverter:
     def __init__(self, posts, driver):
@@ -16,6 +20,7 @@ class InstaPostToUserConverter:
     def get_user(self, post):
         driver = self.driver  # get driver
         driver.get(post)  # open page with post
+        time.sleep(2) # wait for post to load
         user = driver.find_element_by_class_name(el.POST_USER_BUTTON_CLASS).text
         return user
 
