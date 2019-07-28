@@ -9,19 +9,18 @@ else:
     from . import insta_logger as logger
 
 
-class InstaUserFollower:
+class InstaUserUnfollower:
     def __init__(self, user_list, driver):
         self.user_list = user_list
         self.driver = driver
 
-    def follow(self):
-        driver = self.driver  # get driver
-        followed = []
+    def unfollow(self):
         success = True
-        
+        driver = self.driver  # get driver
+        unfollowed = []
         for user in self.user_list:
-            driver.get(f"https://www.instagram.com/{user}/")  # open user
             
+            driver.get(f"https://www.instagram.com/{user}/")  # open user
             time.sleep(3)
             
             try:
@@ -30,20 +29,25 @@ class InstaUserFollower:
                 print(f"User {user} does not exist or there are issues with your connection.")
                 success = False
             
-            if success:
-                followed.append(user)
-            
-            time.sleep(10)
+            time.sleep(2)
 
-        return followed
+            try:
+                driver.find_element_by_class_name(el.UNFOLLOW_UNFOLLOW_BUTTON_CLASS).click()
+            except NoSuchElementException as _:
+                print(f"There might be issues with your connection. Failed to unfollow user: {user}.")
+                success = False
+
+            if success:
+                unfollowed.append(user)
+        return unfollowed
 
 
 def read_args():
     parser = argparse.ArgumentParser(
-        description="""Follow given users"""
+        description="""Unfollow given users"""
     )
     parser.add_argument(
-        "-ul", "--user_list", required=True, help="list of users to follow", default=[]
+        "-ul", "--user_list", required=True, help="list of users to unfollow", default=[]
     )
     parser.add_argument(
         "-u", "--username", required=True, help="your instagram username", default=None
@@ -60,5 +64,5 @@ if __name__ == "__main__":
     user_list_str, username, password = read_args()
     login = logger.InstaLogger(username, password, driver)
     login.login()
-    follower = InstaUserFollower(ast.literal_eval(user_list_str), driver)
+    follower = InstaUserUnfollower(ast.literal_eval(user_list_str), driver)
     follower.follow()

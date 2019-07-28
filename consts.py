@@ -28,7 +28,6 @@ SELECT_MENU ="""
     5) Follow users that recently created post with given tag(s).
     6) Like posts posted by given user(s).
     7) Unfollow users
-    8) Show help
             """
 
 MAX_POSTS = 1000

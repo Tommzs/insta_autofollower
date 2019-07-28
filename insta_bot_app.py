@@ -4,11 +4,12 @@ from insta_bot.insta_user_post_crawler import InstaUserPostCrawler
 from insta_bot.insta_logger import InstaLogger
 from insta_bot.insta_post_liker import InstaPostLiker
 from insta_bot.insta_user_follower import InstaUserFollower
+from insta_bot.insta_user_unfollower import InstaUserUnfollower
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from os import path
 from getpass import getpass
-import time, csv
+import time, csv, random
 import consts as c
 
 
@@ -247,10 +248,11 @@ def E_follow_users_by_tags():
     
     # follow users
     user_follower = InstaUserFollower(user_list=users, driver=driver)
-    user_follower.follow()
+    followed = user_follower.follow()
 
     # save followed users to file
-    list_to_csv(filename, list_to_save=users)
+    list_to_csv(filename, list_to_save=followed)
+    print("Save all sucessfully followed users to {filename}.")
 
     return f"All done. Thanks for using my services! :)"
 
@@ -303,7 +305,63 @@ def F_like_posts_by_users():
 
 
 def G_unfollow_users():
-    return "OK"
+    print("Unfollowing users is mainly using list that is created by me when you want me to follow users.")
+    print("The file must be formated that each username is on new line. Such as:\nuser1\nuser2\n...")
+    
+    # get file with usernames
+    filename = ask_for_filename("Please give me path to file with usernames: ", read=True)
+    
+    # read usernames from file
+    users = read_users_from_file(filename)
+    
+    # ask if unfollow all
+    un_all = ask_if_unfollow_all()
+
+    # get number of posts
+    num = len(users)
+    to_unfollow = users.copy()
+    if not un_all:
+        try:
+            num = ask_for_number_of_users_to_unfollow()
+        except ValueError as _:
+            return "Thats not a number... dont try to fool me! :P"
+        
+        if num > len(users):
+            print(f"You asked me to unfollow {num} users, however in the list there is only {len(users)} users. Unfollowing all.")
+            num = len(users)
+
+        to_unfollow = random.sample(users, num)
+
+    # get username and password
+    username = ask_for_username()
+    password = ask_for_password()
+
+    # ask if headless
+    headless = ask_if_headless()
+
+    print("Well lets unfollow them! :)")
+
+    # set driver
+    driver = get_driver(headless)
+
+    # login
+    logger = InstaLogger(username, password, driver=driver)
+    is_logged = logger.login()
+    if not is_logged:
+        return f"Wrong username or password."
+
+    # unfollow users
+    unfollower = InstaUserUnfollower(to_unfollow, driver=driver)
+    unfollowed = unfollower.unfollow()
+
+    # remove unfollowed users
+    [users.remove(user) for user in unfollowed]
+
+    # update file
+    list_to_csv(filename, users)
+    print(f"Removed unfollowed users from {filename}.")
+
+    return f"All finished! See ya."
 
 
 def get_driver(headless):
@@ -363,18 +421,24 @@ def ask_for_number_of_posts():
 def ask_for_number_of_users():
     return int(input("How many user links do you want me to get? "))
 
+def ask_for_number_of_users_to_unfollow():
+    return int(input("How many users do you want me to unfollow? "))
 
-def test_file(filename):
+
+def test_file(filename, read):
     try:
-        open(filename, 'w')
+        open_ops = "w"
+        if read:
+            open_ops = "r"
+        open(filename, open_ops)
         return True
     except OSError:
         return False
 
 
-def ask_for_filename(message="Select name of a file to which I should save what I find for you: "):
+def ask_for_filename(message="Select name of a file to which I should save what I find for you: ", read=False):
     filename = ""
-    while test_file(filename) == False:
+    while test_file(filename, read) == False:
         filename = ask_for_str(message)
     return filename
 
@@ -394,6 +458,22 @@ def ask_if_headless():
     opTrue = "private"
     opFalse = "spy"
     return ask_if_a_or_b(message, opTrue=opTrue, opFalse=opFalse)
+
+
+def ask_if_unfollow_all():
+    message = "Do you want to unfollow all users or select number of users to unfollow?"
+    opTrue = "all"
+    opFalse = "select"
+    return ask_if_a_or_b(message, opTrue=opTrue, opFalse=opFalse)
+
+
+def read_users_from_file(filename):
+    users = []
+    with open(filename, 'r') as readFile:
+        reader = csv.reader(readFile, delimiter='\n')
+        for user in reader:
+            users.extend(user)
+    return users
 
 
 if __name__ == "__main__":
