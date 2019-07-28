@@ -21,6 +21,8 @@ class InstaUserPostCrawler:
         )  # open page with user
         time.sleep(3)  # wait for page to load
         posts = set()
+        prev_post_list_len = 0
+        same_size_counter = 0
         for _ in range(1000): # scroll to "infinity"
             driver.execute_script(SCROLL_DOWN)
             time.sleep(1)
@@ -30,6 +32,19 @@ class InstaUserPostCrawler:
                     posts.update([post])
             if len(posts) > self.num_of_posts:
                 break
+            if len(posts) == prev_post_list_len:
+                same_size_counter += 1
+            else:
+                prev_post_list_len = len(posts)
+            if same_size_counter > 4:
+                if prev_post_list_len == 0:
+                    print(f"Sorry, {username} have 0 posts, is private or does not exist.")
+                else:
+                    print(f"Sorry, {username} does not have more than {prev_post_list_len} posts.")
+                break
+                # reduce size to required number
+        while len(posts) > self.num_of_posts:
+            posts.pop()
         return posts
 
     def get_post_list(self):

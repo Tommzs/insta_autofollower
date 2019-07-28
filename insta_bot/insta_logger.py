@@ -21,6 +21,7 @@ class InstaLogger:
         password.send_keys(self.password)  # insert password
         password.send_keys(Keys.RETURN)  #  login
         time.sleep(3)  # wait until logged in
+        return driver.current_url == 'https://www.instagram.com/'
 
 
 def read_args():
