@@ -32,3 +32,9 @@ SELECT_MENU ="""
 
 MAX_POSTS = 1000
 MAX_USERS = 1000
+
+SCROLL_WAIT = 1
+LOAD_WAIT = 3
+LIKE_FOLLOW_WAIT = 10
+
+SCROLL_DOWN = "window.scrollTo(0, document.body.scrollHeight)"

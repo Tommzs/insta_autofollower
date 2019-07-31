@@ -5,12 +5,12 @@ from insta_bot.insta_logger import InstaLogger
 from insta_bot.insta_post_liker import InstaPostLiker
 from insta_bot.insta_user_follower import InstaUserFollower
 from insta_bot.insta_user_unfollower import InstaUserUnfollower
+from insta_bot import constants as c
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from os import path
 from getpass import getpass
-import time, csv, random
-import consts as c
+import csv, random
 
 
 def bot_menu():
@@ -84,7 +84,7 @@ def B_get_users_by_tags():
 
     # get number of posts
     try:
-        num = ask_for_number_of_users()
+        num = ask_for_number_of_users_to_get()
     except ValueError as _:
         return "I can tell a number from... not a number. Give me a number next time if you want me to help you."
     if num > c.MAX_USERS:
@@ -209,7 +209,7 @@ def E_follow_users_by_tags():
 
     # get number of posts
     try:
-        num = ask_for_number_of_users()
+        num = ask_for_number_of_users_to_follow()
     except ValueError as _:
         return "Thats not a number... dont try to fool me! :P"
     if num > c.MAX_POSTS:
@@ -418,8 +418,13 @@ def ask_for_number_of_posts():
     return int(input("How many posts for each tag/user do you want me to get? "))
 
 
-def ask_for_number_of_users():
+def ask_for_number_of_users_to_get():
     return int(input("How many user links do you want me to get? "))
+
+
+def ask_for_number_of_users_to_follow():
+    return int(input("How many users do you want me to follow? "))
+
 
 def ask_for_number_of_users_to_unfollow():
     return int(input("How many users do you want me to unfollow? "))
@@ -444,7 +449,7 @@ def ask_for_filename(message="Select name of a file to which I should save what 
 
 
 def ask_for_tags():
-    message = "What tags are you interested in? Write each followed by enter. If you want to finish, do not write anything into the line and press enter."
+    message = "What tags are you interested in?"
     return ask_for_list_str(message, input_str="#")
 
 

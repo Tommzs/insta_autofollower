@@ -1,7 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time, argparse
-
+if __name__ == '__main__':
+    import constants as c
+else:
+    from . import constants as c
 
 class InstaLogger:
     def __init__(self, username, password, driver):
@@ -12,7 +15,7 @@ class InstaLogger:
     def login(self):
         driver = self.driver  # get driver
         driver.get("https://www.instagram.com/accounts/login/")  # open instagram login
-        time.sleep(3)  # wait for page to load
+        time.sleep(c.LOAD_WAIT)  # wait for page to load
         email = driver.find_element_by_name("username")
         password = driver.find_element_by_name("password")  # get password field
         email.clear()  # clear the fields
@@ -20,7 +23,7 @@ class InstaLogger:
         email.send_keys(self.username)  # insert username
         password.send_keys(self.password)  # insert password
         password.send_keys(Keys.RETURN)  #  login
-        time.sleep(3)  # wait until logged in
+        time.sleep(c.LOAD_WAIT)  # wait until logged in
         return driver.current_url == 'https://www.instagram.com/'
 
 

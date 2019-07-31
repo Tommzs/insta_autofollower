@@ -1,10 +1,12 @@
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 import time, argparse, ast
 if __name__ == '__main__':
     import element_classes as el
+    import constants as c
 else:
     from . import element_classes as el
-
+    from . import constants as c
 
 class InstaPostToUserConverter:
     def __init__(self, posts, driver):
@@ -14,14 +16,22 @@ class InstaPostToUserConverter:
     def convert(self):
         users = set()
         for post in self.posts: # get posts for each tag
-            users.add(self.get_user(post))
+            user = self.get_user(post)
+            if user is not None:
+                users.add(user)
         return list(users)
 
     def get_user(self, post):
         driver = self.driver  # get driver
         driver.get(post)  # open page with post
-        time.sleep(2) # wait for post to load
-        user = driver.find_element_by_class_name(el.POST_USER_BUTTON_CLASS).text
+        time.sleep(c.LOAD_WAIT) # wait for post to load
+        user = None
+
+        try:
+            user = driver.find_element_by_class_name(el.POST_USER_BUTTON_CLASS).text
+        except NoSuchElementException as _:
+            print(f"Post {post} does not exist or there are issues with your connection.")
+
         return user
 
 

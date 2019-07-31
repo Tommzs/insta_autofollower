@@ -1,12 +1,15 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import time, argparse, ast
+
 if __name__ == '__main__':
     import element_classes as el
     import insta_logger as logger
+    import constants as c
 else:
     from . import element_classes as el
     from . import insta_logger as logger
+    from . import constants as c
 
 
 class InstaUserUnfollower:
@@ -21,7 +24,7 @@ class InstaUserUnfollower:
         for user in self.user_list:
             
             driver.get(f"https://www.instagram.com/{user}/")  # open user
-            time.sleep(3)
+            time.sleep(c.LOAD_WAIT)
             
             try:
                 driver.find_element_by_class_name(el.USER_FOLLOW_BUTTON_CLASS).click()
@@ -29,7 +32,7 @@ class InstaUserUnfollower:
                 print(f"User {user} does not exist or there are issues with your connection.")
                 success = False
             
-            time.sleep(2)
+            time.sleep(c.LOAD_WAIT)
 
             try:
                 driver.find_element_by_class_name(el.UNFOLLOW_UNFOLLOW_BUTTON_CLASS).click()
@@ -64,5 +67,5 @@ if __name__ == "__main__":
     user_list_str, username, password = read_args()
     login = logger.InstaLogger(username, password, driver)
     login.login()
-    follower = InstaUserUnfollower(ast.literal_eval(user_list_str), driver)
-    follower.follow()
+    unfollower = InstaUserUnfollower(ast.literal_eval(user_list_str), driver)
+    unfollower.unfollow()

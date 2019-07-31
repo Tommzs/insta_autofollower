@@ -1,6 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 import time, argparse
+if __name__ == '__main__':
+    import constants as c
+else:
+    from . import constants as c
 
 SCROLL_DOWN = "window.scrollTo(0, document.body.scrollHeight)"
 
@@ -19,13 +23,13 @@ class InstaUserPostCrawler:
         driver.get(
             f"https://www.instagram.com/{username}/"
         )  # open page with user
-        time.sleep(3)  # wait for page to load
+        time.sleep(c.LOAD_WAIT)  # wait for page to load
         posts = set()
         prev_post_list_len = 0
         same_size_counter = 0
         for _ in range(1000): # scroll to "infinity"
-            driver.execute_script(SCROLL_DOWN)
-            time.sleep(1)
+            driver.execute_script(c.SCROLL_DOWN)
+            time.sleep(c.SCROLL_WAIT)
             post_list = self.get_post_list()
             for post in post_list:
                 if post not in posts:

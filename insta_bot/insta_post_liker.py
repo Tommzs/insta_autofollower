@@ -1,11 +1,15 @@
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 import time, argparse, ast
 if __name__ == '__main__':
     import element_classes as el
     import insta_logger as logger
+    import constants as c
 else:
     from . import element_classes as el
     from . import insta_logger as logger
+    from . import constants as c
+
 
 class InstaPostLiker:
     def __init__(self, post_list, driver):
@@ -16,9 +20,14 @@ class InstaPostLiker:
         driver = self.driver  # get driver
         for post in self.post_list:
             driver.get(post)  # open post
-            time.sleep(3)
-            driver.find_element_by_class_name(el.POST_LIKE_BUTTON_CLASS).click()
-            time.sleep(10)
+            time.sleep(c.LOAD_WAIT)
+
+            try:
+                driver.find_element_by_class_name(el.POST_LIKE_BUTTON_CLASS).click()
+            except NoSuchElementException as _:
+                print(f"Post {post} does not exist or there are issues with your connection.")
+            
+            time.sleep(c.LIKE_FOLLOW_WAIT)
 
 
 def read_args():
