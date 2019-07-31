@@ -1,5 +1,5 @@
 VERSION = "1.0"
-INSTA_LOGO ="""
+INSTA_LOGO = """
       `.-://////////////////:-.`            
    `:ossssssssssssssssssssssssss+:`         
   -syys/-.```            ```.-/osso-        
@@ -20,7 +20,7 @@ INSTA_LOGO ="""
     .--------------::::///+++ooo+-`         
        ``````.........--------.`      
        """
-SELECT_MENU ="""
+SELECT_MENU = """
     1) Get list of recent posts with given tag(s).
     2) Get list of users posting posts with given tag(s).
     3) Get list of posts posted by given user(s).

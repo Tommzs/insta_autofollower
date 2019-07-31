@@ -1,10 +1,12 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time, argparse
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import constants as c
 else:
     from . import constants as c
+
 
 class InstaLogger:
     def __init__(self, username, password, driver):
@@ -24,7 +26,7 @@ class InstaLogger:
         password.send_keys(self.password)  # insert password
         password.send_keys(Keys.RETURN)  #  login
         time.sleep(c.LOAD_WAIT)  # wait until logged in
-        return driver.current_url == 'https://www.instagram.com/'
+        return driver.current_url == "https://www.instagram.com/"
 
 
 def read_args():

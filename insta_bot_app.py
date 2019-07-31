@@ -46,7 +46,7 @@ def execute_selection(selection):
 def A_get_posts_by_tags():
     # get tag list
     tags = ask_for_tags()
-    if(len(tags) < 1):
+    if len(tags) < 1:
         return "Cant search tags without tags, please give me some tags (:"
 
     # get number of posts
@@ -62,7 +62,7 @@ def A_get_posts_by_tags():
 
     # ask for filename
     filename = ask_for_filename()
-    
+
     print("Thanks :) Lets see what I can find...")
 
     # get tags
@@ -74,12 +74,12 @@ def A_get_posts_by_tags():
     list_to_csv(filename, posts)
 
     return f"Posts saved to file {filename}. It was a pleasure helping you. :)"
-    
+
 
 def B_get_users_by_tags():
     # get tag list
     tags = ask_for_tags()
-    if(len(tags) < 1):
+    if len(tags) < 1:
         return "No tags were given. Please give me some tags :("
 
     # get number of posts
@@ -95,12 +95,12 @@ def B_get_users_by_tags():
 
     # ask for filename
     filename = ask_for_filename()
-    
+
     print("Lets see who posts with these tags...")
 
     # get users from tags
     driver = get_driver(headless)
-    tag_crawler = InstaTagPostCrawler(tags, num_of_posts=num*2, driver=driver)
+    tag_crawler = InstaTagPostCrawler(tags, num_of_posts=num * 2, driver=driver)
     posts = tag_crawler.crawl()
 
     post_to_user_converter = InstaPostToUserConverter(posts, driver)
@@ -109,7 +109,9 @@ def B_get_users_by_tags():
     if len(users) > num:
         users = users[:num]
     else:
-        print(f"I only found {len(users)} users for given tags. Seems like too many posts were posted by 1 user. Try different tags. Sorry :(")
+        print(
+            f"I only found {len(users)} users for given tags. Seems like too many posts were posted by 1 user. Try different tags. Sorry :("
+        )
 
     # save to file
     list_to_csv(filename, users)
@@ -120,9 +122,9 @@ def B_get_users_by_tags():
 def C_get_posts_by_users():
     # get user list
     users = ask_for_users()
-    if(len(users) < 1):
+    if len(users) < 1:
         return "No users were given. I guess you dont want me to do anything :("
-    
+
     # get number of posts
     try:
         num = ask_for_number_of_posts()
@@ -136,14 +138,16 @@ def C_get_posts_by_users():
 
     # ask for filename
     filename = ask_for_filename()
-    
+
     print("Thanks :) Lets see what I can find...")
 
     # get users
     driver = get_driver(headless)
     posts = []
     for user in users:
-        tag_crawler = InstaUserPostCrawler(username=user, num_of_posts=num, driver=driver)
+        tag_crawler = InstaUserPostCrawler(
+            username=user, num_of_posts=num, driver=driver
+        )
         posts += tag_crawler.crawl()
 
     # save to file
@@ -157,9 +161,9 @@ def D_like_posts_by_tags():
     username = ask_for_username()
     password = ask_for_password()
 
-     # get tag list
+    # get tag list
     tags = ask_for_tags()
-    if(len(tags) < 1):
+    if len(tags) < 1:
         return "Cant search tags without tags, please give me some tags (:"
 
     # get number of posts
@@ -172,12 +176,12 @@ def D_like_posts_by_tags():
 
     # ask if headless
     headless = ask_if_headless()
-    
+
     print("Thanks :) Lets go do some liking...")
 
     # set driver
     driver = get_driver(headless)
-    
+
     # login
     logger = InstaLogger(username, password, driver=driver)
     is_logged = logger.login()
@@ -202,9 +206,9 @@ def E_follow_users_by_tags():
     username = ask_for_username()
     password = ask_for_password()
 
-     # get tag list
+    # get tag list
     tags = ask_for_tags()
-    if(len(tags) < 1):
+    if len(tags) < 1:
         return "Cant search tags without tags, please give me some tags (:"
 
     # get number of posts
@@ -220,12 +224,12 @@ def E_follow_users_by_tags():
 
     # ask if headless
     headless = ask_if_headless()
-    
+
     print("Thanks :) Lets follow some ppl...")
 
     # set driver
     driver = get_driver(headless)
-    
+
     # login
     logger = InstaLogger(username, password, driver=driver)
     is_logged = logger.login()
@@ -233,7 +237,9 @@ def E_follow_users_by_tags():
         return f"Wrong username or password."
 
     # get list of posts
-    tag_crawler = InstaTagPostCrawler(tags, num_of_posts=round(num*1.5), driver=driver)
+    tag_crawler = InstaTagPostCrawler(
+        tags, num_of_posts=round(num * 1.5), driver=driver
+    )
     posts = tag_crawler.crawl()
     if len(posts) < 1:
         return f"No posts found, nothing to follow."
@@ -241,11 +247,11 @@ def E_follow_users_by_tags():
     user_converter = InstaPostToUserConverter(posts, driver)
     users = user_converter.convert()
 
-    if(len(users) < num):
+    if len(users) < num:
         return f"Sorry could only get {len(users)} users. I will still follow them, dont worry. :)"
     else:
         users = users[:num]
-    
+
     # follow users
     user_follower = InstaUserFollower(user_list=users, driver=driver)
     followed = user_follower.follow()
@@ -262,9 +268,9 @@ def F_like_posts_by_users():
     username = ask_for_username()
     password = ask_for_password()
 
-     # get tag list
+    # get tag list
     users = ask_for_users()
-    if(len(users) < 1):
+    if len(users) < 1:
         return "Cant like posts of users if there are no users :("
 
     # get number of posts
@@ -277,12 +283,12 @@ def F_like_posts_by_users():
 
     # ask if headless
     headless = ask_if_headless()
-    
+
     print("Thanks :) Lets go do some liking...")
 
     # set driver
     driver = get_driver(headless)
-    
+
     # login
     logger = InstaLogger(username, password, driver=driver)
     is_logged = logger.login()
@@ -305,15 +311,21 @@ def F_like_posts_by_users():
 
 
 def G_unfollow_users():
-    print("Unfollowing users is mainly using list that is created by me when you want me to follow users.")
-    print("The file must be formated that each username is on new line. Such as:\nuser1\nuser2\n...")
-    
+    print(
+        "Unfollowing users is mainly using list that is created by me when you want me to follow users."
+    )
+    print(
+        "The file must be formated that each username is on new line. Such as:\nuser1\nuser2\n..."
+    )
+
     # get file with usernames
-    filename = ask_for_filename("Please give me path to file with usernames: ", read=True)
-    
+    filename = ask_for_filename(
+        "Please give me path to file with usernames: ", read=True
+    )
+
     # read usernames from file
     users = read_users_from_file(filename)
-    
+
     # ask if unfollow all
     un_all = ask_if_unfollow_all()
 
@@ -325,9 +337,11 @@ def G_unfollow_users():
             num = ask_for_number_of_users_to_unfollow()
         except ValueError as _:
             return "Thats not a number... dont try to fool me! :P"
-        
+
         if num > len(users):
-            print(f"You asked me to unfollow {num} users, however in the list there is only {len(users)} users. Unfollowing all.")
+            print(
+                f"You asked me to unfollow {num} users, however in the list there is only {len(users)} users. Unfollowing all."
+            )
             num = len(users)
 
         to_unfollow = random.sample(users, num)
@@ -371,13 +385,15 @@ def get_driver(headless):
 
 
 def list_to_csv(filename, list_to_save):
-    with open(filename, 'w') as writeFile:
-        writer = csv.writer(writeFile, delimiter='\n')
+    with open(filename, "w") as writeFile:
+        writer = csv.writer(writeFile, delimiter="\n")
         writer.writerows([list_to_save])
 
 
 def ask_for_list_str(message, input_str):
-    print(f"{message} Write each followed by enter. If you want to finish, do not write anything into the line and press enter.")
+    print(
+        f"{message} Write each followed by enter. If you want to finish, do not write anything into the line and press enter."
+    )
     out_list = []
     element = None
     while element != "":
@@ -441,7 +457,10 @@ def test_file(filename, read):
         return False
 
 
-def ask_for_filename(message="Select name of a file to which I should save what I find for you: ", read=False):
+def ask_for_filename(
+    message="Select name of a file to which I should save what I find for you: ",
+    read=False,
+):
     filename = ""
     while test_file(filename, read) == False:
         filename = ask_for_str(message)
@@ -474,8 +493,8 @@ def ask_if_unfollow_all():
 
 def read_users_from_file(filename):
     users = []
-    with open(filename, 'r') as readFile:
-        reader = csv.reader(readFile, delimiter='\n')
+    with open(filename, "r") as readFile:
+        reader = csv.reader(readFile, delimiter="\n")
         for user in reader:
             users.extend(user)
     return users

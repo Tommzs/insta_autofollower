@@ -1,7 +1,8 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import time, argparse, ast
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import element_classes as el
     import insta_logger as logger
     import constants as c
@@ -25,8 +26,10 @@ class InstaPostLiker:
             try:
                 driver.find_element_by_class_name(el.POST_LIKE_BUTTON_CLASS).click()
             except NoSuchElementException as _:
-                print(f"Post {post} does not exist or there are issues with your connection.")
-            
+                print(
+                    f"Post {post} does not exist or there are issues with your connection."
+                )
+
             time.sleep(c.LIKE_FOLLOW_WAIT)
 
 

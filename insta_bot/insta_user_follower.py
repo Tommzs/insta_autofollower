@@ -1,7 +1,8 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import time, argparse, ast
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import element_classes as el
     import insta_logger as logger
     import constants as c
@@ -9,6 +10,7 @@ else:
     from . import element_classes as el
     from . import insta_logger as logger
     from . import constants as c
+
 
 class InstaUserFollower:
     def __init__(self, user_list, driver):
@@ -19,30 +21,30 @@ class InstaUserFollower:
         driver = self.driver  # get driver
         followed = []
         success = True
-        
+
         for user in self.user_list:
             driver.get(f"https://www.instagram.com/{user}/")  # open user
-            
+
             time.sleep(c.LOAD_WAIT)
-            
+
             try:
                 driver.find_element_by_class_name(el.USER_FOLLOW_BUTTON_CLASS).click()
             except NoSuchElementException as _:
-                print(f"User {user} does not exist or there are issues with your connection.")
+                print(
+                    f"User {user} does not exist or there are issues with your connection."
+                )
                 success = False
-            
+
             if success:
                 followed.append(user)
-            
+
             time.sleep(c.LIKE_FOLLOW_WAIT)
 
         return followed
 
 
 def read_args():
-    parser = argparse.ArgumentParser(
-        description="""Follow given users"""
-    )
+    parser = argparse.ArgumentParser(description="""Follow given users""")
     parser.add_argument(
         "-ul", "--user_list", required=True, help="list of users to follow", default=[]
     )

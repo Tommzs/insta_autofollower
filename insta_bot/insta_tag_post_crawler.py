@@ -1,7 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 import time, argparse, ast
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import constants as c
 else:
     from . import constants as c
@@ -15,7 +16,7 @@ class InstaTagPostCrawler:
 
     def crawl(self):
         posts = set()
-        for tag in self.tags: # get posts for each tag
+        for tag in self.tags:  # get posts for each tag
             posts.update(self.get_posts(tag))
         return list(posts)
 
@@ -26,7 +27,7 @@ class InstaTagPostCrawler:
         )  # open page with tag
         time.sleep(c.LOAD_WAIT)  # wait for page to load
         posts = set()
-        for _ in range(1000): # scroll to "infinity"
+        for _ in range(1000):  # scroll to "infinity"
             prev_len = len(posts)
             driver.execute_script(c.SCROLL_DOWN)
             time.sleep(c.SCROLL_WAIT)
@@ -42,10 +43,12 @@ class InstaTagPostCrawler:
         return posts
 
     def get_post_list(self):
-        all_a_elements = self.driver.find_elements_by_tag_name("a") # get a tag elements
-        all_links = [a.get_attribute("href") for a in all_a_elements] # get all links
-        post_links = list(filter(lambda link: "/p/" in link, all_links)) # filter posts
-        return post_links[9:] # ignore first 9 (skip recommended posts)
+        all_a_elements = self.driver.find_elements_by_tag_name(
+            "a"
+        )  # get a tag elements
+        all_links = [a.get_attribute("href") for a in all_a_elements]  # get all links
+        post_links = list(filter(lambda link: "/p/" in link, all_links))  # filter posts
+        return post_links[9:]  # ignore first 9 (skip recommended posts)
 
 
 def read_args():
@@ -65,11 +68,13 @@ def read_args():
     args = vars(parser.parse_args())
     return args["tag_list"], args["num_of_posts"]
 
+
 if __name__ == "__main__":
     options = Options()
     options.headless = True
     driver = webdriver.Firefox(options=options)
     tag_list_str, num_of_posts_str = read_args()
-    crawler = InstaTagPostCrawler(ast.literal_eval(tag_list_str), int(num_of_posts_str), driver)
+    crawler = InstaTagPostCrawler(
+        ast.literal_eval(tag_list_str), int(num_of_posts_str), driver
+    )
     print(crawler.crawl())
-    

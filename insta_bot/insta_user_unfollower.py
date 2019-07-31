@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import time, argparse, ast
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import element_classes as el
     import insta_logger as logger
     import constants as c
@@ -22,22 +22,28 @@ class InstaUserUnfollower:
         driver = self.driver  # get driver
         unfollowed = []
         for user in self.user_list:
-            
+
             driver.get(f"https://www.instagram.com/{user}/")  # open user
-            time.sleep(c.LOAD_WAIT)
-            
-            try:
-                driver.find_element_by_class_name(el.USER_FOLLOW_BUTTON_CLASS).click()
-            except NoSuchElementException as _:
-                print(f"User {user} does not exist or there are issues with your connection.")
-                success = False
-            
             time.sleep(c.LOAD_WAIT)
 
             try:
-                driver.find_element_by_class_name(el.UNFOLLOW_UNFOLLOW_BUTTON_CLASS).click()
+                driver.find_element_by_class_name(el.USER_FOLLOW_BUTTON_CLASS).click()
             except NoSuchElementException as _:
-                print(f"There might be issues with your connection. Failed to unfollow user: {user}.")
+                print(
+                    f"User {user} does not exist or there are issues with your connection."
+                )
+                success = False
+
+            time.sleep(c.LOAD_WAIT)
+
+            try:
+                driver.find_element_by_class_name(
+                    el.UNFOLLOW_UNFOLLOW_BUTTON_CLASS
+                ).click()
+            except NoSuchElementException as _:
+                print(
+                    f"There might be issues with your connection. Failed to unfollow user: {user}."
+                )
                 success = False
 
             if success:
@@ -46,11 +52,13 @@ class InstaUserUnfollower:
 
 
 def read_args():
-    parser = argparse.ArgumentParser(
-        description="""Unfollow given users"""
-    )
+    parser = argparse.ArgumentParser(description="""Unfollow given users""")
     parser.add_argument(
-        "-ul", "--user_list", required=True, help="list of users to unfollow", default=[]
+        "-ul",
+        "--user_list",
+        required=True,
+        help="list of users to unfollow",
+        default=[],
     )
     parser.add_argument(
         "-u", "--username", required=True, help="your instagram username", default=None
