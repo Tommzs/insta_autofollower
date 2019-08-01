@@ -21,13 +21,17 @@ INSTA_LOGO = """
        ``````.........--------.`      
        """
 SELECT_MENU = """
-    1) Get list of recent posts with given tag(s).
-    2) Get list of users posting posts with given tag(s).
-    3) Get list of posts posted by given user(s).
-    4) Like recent posts with given tag(s).
-    5) Follow users that recently created post with given tag(s).
-    6) Like posts posted by given user(s).
-    7) Unfollow users
+    Random likes/follows (more organic behaviour):
+      (1) Like recent posts with given tag(s).
+      (2) Follow users that recently created post with given tag(s).
+    
+    Get list of users for further tasks:
+      (3) Get list of users posting posts with given tag(s).
+    
+   Actions on user lists:
+      (4) SPAM! Like posts posted by given user(s).
+      (5) Follow users from list.
+      (6) Unfollow users.
             """
 
 MAX_POSTS = 1000

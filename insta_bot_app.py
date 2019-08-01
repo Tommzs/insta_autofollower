@@ -25,138 +25,23 @@ def execute_selection(selection):
     status = None
     if 0 < selection < 8:
         if selection == 1:
-            status = A_get_posts_by_tags()
+            status = A_like_posts_by_tags()
         elif selection == 2:
-            status = B_get_users_by_tags()
+            status = B_follow_users_by_tags()
         elif selection == 3:
-            status = C_get_posts_by_users()
+            status = C_get_users_by_tags()
         elif selection == 4:
-            status = D_like_posts_by_tags()
+            status = D_like_posts_by_users()
         elif selection == 5:
-            status = E_follow_users_by_tags()
+            status = E_follow_users_from_list()
         elif selection == 6:
-            status = F_like_posts_by_users()
-        elif selection == 7:
-            status = G_unfollow_users()
+            status = F_unfollow_users()
     else:
         status = f"Sorry I dont know what option ({selection}) is. :(."
     return status
 
 
-def A_get_posts_by_tags():
-    # get tag list
-    tags = ask_for_tags()
-    if len(tags) < 1:
-        return "Cant search tags without tags, please give me some tags (:"
-
-    # get number of posts
-    try:
-        num = ask_for_number_of_posts()
-    except ValueError as _:
-        return "Thats not a number... dont try to fool me! :P"
-    if num > c.MAX_POSTS:
-        return f"Sorry cant handle more than {c.MAX_POSTS} posts. (Psst: you can change that in consts.py)"
-
-    # ask if headless
-    headless = ask_if_headless()
-
-    # ask for filename
-    filename = ask_for_filename()
-
-    print("Thanks :) Lets see what I can find...")
-
-    # get tags
-    driver = get_driver(headless)
-    tag_crawler = InstaTagPostCrawler(tags, num_of_posts=num, driver=driver)
-    posts = tag_crawler.crawl()
-
-    # save to file
-    list_to_csv(filename, posts)
-
-    return f"Posts saved to file {filename}. It was a pleasure helping you. :)"
-
-
-def B_get_users_by_tags():
-    # get tag list
-    tags = ask_for_tags()
-    if len(tags) < 1:
-        return "No tags were given. Please give me some tags :("
-
-    # get number of posts
-    try:
-        num = ask_for_number_of_users_to_get()
-    except ValueError as _:
-        return "I can tell a number from... not a number. Give me a number next time if you want me to help you."
-    if num > c.MAX_USERS:
-        return f"Whaaat..so many? I cant. Sorry.. at most {c.MAX_USERS}. Or change it in consts.py"
-
-    # ask if headless
-    headless = ask_if_headless()
-
-    # ask for filename
-    filename = ask_for_filename()
-
-    print("Lets see who posts with these tags...")
-
-    # get users from tags
-    driver = get_driver(headless)
-    tag_crawler = InstaTagPostCrawler(tags, num_of_posts=num * 2, driver=driver)
-    posts = tag_crawler.crawl()
-
-    post_to_user_converter = InstaPostToUserConverter(posts, driver)
-    users = post_to_user_converter.convert()
-
-    if len(users) > num:
-        users = users[:num]
-    else:
-        print(
-            f"I only found {len(users)} users for given tags. Seems like too many posts were posted by 1 user. Try different tags. Sorry :("
-        )
-
-    # save to file
-    list_to_csv(filename, users)
-
-    return f"I have saved the users to {filename} for you."
-
-
-def C_get_posts_by_users():
-    # get user list
-    users = ask_for_users()
-    if len(users) < 1:
-        return "No users were given. I guess you dont want me to do anything :("
-
-    # get number of posts
-    try:
-        num = ask_for_number_of_posts()
-    except ValueError as _:
-        return "Thats not a number... dont try to fool me! :P"
-    if num > c.MAX_POSTS:
-        return f"Sorry cant handle more than {c.MAX_POSTS} posts. (Psst: you can change that in consts.py)"
-
-    # ask if headless
-    headless = ask_if_headless()
-
-    # ask for filename
-    filename = ask_for_filename()
-
-    print("Thanks :) Lets see what I can find...")
-
-    # get users
-    driver = get_driver(headless)
-    posts = []
-    for user in users:
-        tag_crawler = InstaUserPostCrawler(
-            username=user, num_of_posts=num, driver=driver
-        )
-        posts += tag_crawler.crawl()
-
-    # save to file
-    list_to_csv(filename, posts)
-
-    return f"Posts for all users saved to file {filename}. Let me know when you need something else :)"
-
-
-def D_like_posts_by_tags():
+def A_like_posts_by_tags():
     # get username and password
     username = ask_for_username()
     password = ask_for_password()
@@ -201,7 +86,7 @@ def D_like_posts_by_tags():
     return f"All done. Lets do this again sometimes..."
 
 
-def E_follow_users_by_tags():
+def B_follow_users_by_tags():
     # get username and password
     username = ask_for_username()
     password = ask_for_password()
@@ -263,13 +148,70 @@ def E_follow_users_by_tags():
     return f"All done. Thanks for using my services! :)"
 
 
-def F_like_posts_by_users():
+def C_get_users_by_tags():
+    # get tag list
+    tags = ask_for_tags()
+    if len(tags) < 1:
+        return "No tags were given. Please give me some tags :("
+
+    # get number of posts
+    try:
+        num = ask_for_number_of_users_to_get()
+    except ValueError as _:
+        return "I can tell a number from... not a number. Give me a number next time if you want me to help you."
+    if num > c.MAX_USERS:
+        return f"Whaaat..so many? I cant. Sorry.. at most {c.MAX_USERS}. Or change it in consts.py"
+
+    # get followers limit
+    try:
+        follower_limit = ask_for_follower_limit()
+    except ValueError as _:
+        return "You cant fool me! Thats not a number... If you want me to help you just give me a proper number next time."
+
+    # ask for filename
+    filename = ask_for_filename()
+
+    # ask if headless
+    headless = ask_if_headless()
+
+    print("Lets see who posts with these tags...")
+
+    # get users from tags
+    driver = get_driver(headless)
+    tag_crawler = InstaTagPostCrawler(tags, num_of_posts=num * 2, driver=driver)
+    posts = tag_crawler.crawl()
+
+    post_to_user_converter = InstaPostToUserConverter(posts, driver, follower_limit=follower_limit)
+    users = post_to_user_converter.convert()
+
+    if len(users) > num:
+        users = users[:num]
+    else:
+        print(
+            f"I only found {len(users)} users for given tags. Seems like too many posts were posted by 1 user. Try different tags. Sorry :("
+        )
+
+    # save to file
+    list_to_csv(filename, users)
+
+    return f"I have saved the users to {filename} for you."
+
+
+def D_like_posts_by_users():
     # get username and password
     username = ask_for_username()
     password = ask_for_password()
 
+    # from list or written?
+    from_list = ask_if_users_from_list()
+
     # get tag list
-    users = ask_for_users()
+    users = []
+    if from_list:
+        filename = ask_for_list_of_users()
+        users = read_users_from_file(filename)
+    else:
+        users = ask_for_users()
     if len(users) < 1:
         return "Cant like posts of users if there are no users :("
 
@@ -310,7 +252,46 @@ def F_like_posts_by_users():
     return f"All done. Lets do this again sometimes..."
 
 
-def G_unfollow_users():
+def E_follow_users_from_list():
+    # get username and password
+    username = ask_for_username()
+    password = ask_for_password()
+
+    # get user list
+    filename_loaded = ask_for_list_of_users()
+    users = read_users_from_file(filename_loaded)
+    if len(users) < 1:
+        return "Cant follow users if there are no users :("
+
+    # ask for filename
+    filename = ask_for_filename("Where should I save list of successfuly followed users? ")
+
+    # ask if headless
+    headless = ask_if_headless()
+
+    print("Thanks :) Lets follow some ppl...")
+
+    # set driver
+    driver = get_driver(headless)
+
+    # login
+    logger = InstaLogger(username, password, driver=driver)
+    is_logged = logger.login()
+    if not is_logged:
+        return f"Wrong username or password."
+
+    # follow users
+    user_follower = InstaUserFollower(user_list=users, driver=driver)
+    followed = user_follower.follow()
+
+    # save followed users to file
+    list_to_csv(filename, list_to_save=followed)
+    print("Save all sucessfully followed users to {filename}.")
+
+    return f"All done. Thanks for using my services! :)"
+
+
+def F_unfollow_users():
     print(
         "Unfollowing users is mainly using list that is created by me when you want me to follow users."
     )
@@ -325,6 +306,8 @@ def G_unfollow_users():
 
     # read usernames from file
     users = read_users_from_file(filename)
+    if len(users) < 1:
+        return "Cant unfollow users if there are no users :("
 
     # ask if unfollow all
     un_all = ask_if_unfollow_all()
@@ -445,6 +428,9 @@ def ask_for_number_of_users_to_follow():
 def ask_for_number_of_users_to_unfollow():
     return int(input("How many users do you want me to unfollow? "))
 
+def ask_for_follower_limit():
+    return int(input("Filter out users with number of followers larger than: "))
+
 
 def test_file(filename, read):
     try:
@@ -467,6 +453,10 @@ def ask_for_filename(
     return filename
 
 
+def ask_for_list_of_users():
+    return ask_for_filename(message="Write path to file with list of users: ", read=True)
+
+
 def ask_for_tags():
     message = "What tags are you interested in?"
     return ask_for_list_str(message, input_str="#")
@@ -481,6 +471,13 @@ def ask_if_headless():
     message = "Do you want to spy on me while I am doing whatever you want me to do or can I do it privately? Write 'spy' or 'private' please."
     opTrue = "private"
     opFalse = "spy"
+    return ask_if_a_or_b(message, opTrue=opTrue, opFalse=opFalse)
+
+
+def ask_if_users_from_list():
+    message = "Do you want to load list of users from file or write them down manually? Write 'file' or 'manual' please."
+    opTrue = "file"
+    opFalse = "manual"
     return ask_if_a_or_b(message, opTrue=opTrue, opFalse=opFalse)
 
 

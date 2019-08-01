@@ -11,16 +11,18 @@ else:
 
 
 class InstaPostToUserConverter:
-    def __init__(self, posts, driver):
+    def __init__(self, posts, driver, follower_limit=0):
         self.posts = posts
         self.driver = driver
+        self.follower_limit = follower_limit
 
     def convert(self):
         users = set()
         for post in self.posts:  # get posts for each tag
             user = self.get_user(post)
             if user is not None:
-                users.add(user)
+                if self.follower_limit > 0 and self.get_follower_count(user) <= self.follower_limit:
+                    users.add(user)
         return list(users)
 
     def get_user(self, post):
@@ -38,6 +40,21 @@ class InstaPostToUserConverter:
 
         return user
 
+    def get_follower_count(self, user):
+        driver = self.driver  # get driver
+        driver.get(f"https://www.instagram.com/{user}/")  # open user
+        time.sleep(c.LOAD_WAIT)
+
+        follower_count = -1
+        try:
+            follower_count = int(driver.find_elements_by_class_name(el.USER_FOLLOWERS_COUNT)[1].get_attribute('title').replace(",",""))
+        except [NoSuchElementException, ValueError] as _:
+            print(
+                f"Follower count for user {user} was not possible to retrieve. There might be issues with your internet connections."
+            )
+
+        return follower_count
+
 
 def read_args():
     parser = argparse.ArgumentParser(
@@ -53,5 +70,5 @@ def read_args():
 if __name__ == "__main__":
     driver = webdriver.Firefox()
     post_list_str = read_args()
-    converter = InstaPostToUserConverter(ast.literal_eval(post_list_str), driver)
+    converter = InstaPostToUserConverter(ast.literal_eval(post_list_str), driver, 200)
     print(converter.convert())
