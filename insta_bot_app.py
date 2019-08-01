@@ -184,7 +184,7 @@ def C_get_users_by_tags():
     post_to_user_converter = InstaPostToUserConverter(posts, driver, follower_limit=follower_limit)
     users = post_to_user_converter.convert()
 
-    if len(users) > num:
+    if len(users) >= num:
         users = users[:num]
     else:
         print(

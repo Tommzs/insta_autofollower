@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
-import time, argparse, ast
+import time, argparse, ast, re
 
 if __name__ == "__main__":
     import element_classes as el
@@ -47,7 +47,7 @@ class InstaPostToUserConverter:
 
         follower_count = -1
         try:
-            follower_count = int(driver.find_elements_by_class_name(el.USER_FOLLOWERS_COUNT)[1].get_attribute('title').replace(",",""))
+            follower_count = int(re.sub('[^0-9]','', driver.find_elements_by_class_name(el.USER_FOLLOWERS_COUNT)[1].get_attribute('title')))
         except [NoSuchElementException, ValueError] as _:
             print(
                 f"Follower count for user {user} was not possible to retrieve. There might be issues with your internet connections."
