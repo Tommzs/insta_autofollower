@@ -2,10 +2,12 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 import time, argparse
+
 if __name__ == "__main__" or __name__ == "insta_logger":
     import element_classes as el
 else:
     from . import element_classes as el
+
 
 class InstaLogger:
     def __init__(self, username, password, driver):
@@ -27,14 +29,20 @@ class InstaLogger:
         time.sleep(5)  # wait until logged in
         user = self.username
         try:
-            driver.find_element_by_class_name(el.HOME_NOTIFICATIONS_NOT_NOW_BUTTON).click()
+            driver.find_element_by_class_name(
+                el.HOME_NOTIFICATIONS_NOT_NOW_BUTTON
+            ).click()
         except NoSuchElementException as _:
-            print("Notification box not found. If your internet is too slow it might cause issues.")
+            print(
+                "Notification box not found. If your internet is too slow it might cause issues."
+            )
         try:
             user = driver.find_element_by_class_name(el.HOME_USERNAME_LABEL).text
         except NoSuchElementException as _:
-            print("Username could not be retrieved. If your used email for login, this might cause issue. If you use your instagram username instead everything should be ok.")
-        
+            print(
+                "Username could not be retrieved. If your used email for login, this might cause issue. If you use your instagram username instead everything should be ok."
+            )
+
         return driver.current_url == "https://www.instagram.com/", user
 
 

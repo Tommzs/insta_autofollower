@@ -23,7 +23,10 @@ class InstaPostToUserConverter:
         for post in self.posts:  # get posts for each tag
             user = self.get_user(post)
             if user is not None:
-                if self.follower_limit > 0 and self.get_follower_count(user) <= self.follower_limit:
+                if (
+                    self.follower_limit > 0
+                    and self.get_follower_count(user) <= self.follower_limit
+                ):
                     users.add(user)
             if self.num_requested > 0 and len(users) >= self.num_requested:
                 break
@@ -49,7 +52,15 @@ class InstaPostToUserConverter:
 
         follower_count = -1
         try:
-            follower_count = int(re.sub('[^0-9]','', driver.find_elements_by_class_name(el.USER_FOLLOWERS_COUNT_LABEL)[1].get_attribute('title')))
+            follower_count = int(
+                re.sub(
+                    "[^0-9]",
+                    "",
+                    driver.find_elements_by_class_name(el.USER_FOLLOWERS_COUNT_LABEL)[
+                        1
+                    ].get_attribute("title"),
+                )
+            )
         except (NoSuchElementException, ValueError) as _:
             print(
                 f"Follower count for user {user} was not possible to retrieve. There might be issues with your internet connections."

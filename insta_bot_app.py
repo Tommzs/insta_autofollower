@@ -184,7 +184,9 @@ def C_get_users_by_tags():
     tag_crawler = InstaTagPostCrawler(tags, num_of_posts=num * 2, driver=driver)
     posts = tag_crawler.crawl()
 
-    post_to_user_converter = InstaPostToUserConverter(posts, driver, follower_limit=follower_limit, num_requested=num)
+    post_to_user_converter = InstaPostToUserConverter(
+        posts, driver, follower_limit=follower_limit, num_requested=num
+    )
     users = post_to_user_converter.convert()
 
     if len(users) >= num:
@@ -201,7 +203,9 @@ def C_get_users_by_tags():
 
 
 def D_get_users_followed_minus_following():
-    print("Currently I am only able to obtain 99 followers/following at once, thus the list will not be complete.")
+    print(
+        "Currently I am only able to obtain 99 followers/following at once, thus the list will not be complete."
+    )
     # get username and password
     username = ask_for_username()
     password = ask_for_password()
@@ -287,7 +291,9 @@ def F_follow_users_from_list():
         return "Cant follow users if there are no users :("
 
     # ask for filename
-    filename = ask_for_filename("Where should I save list of successfuly followed users? ")
+    filename = ask_for_filename(
+        "Where should I save list of successfuly followed users? "
+    )
 
     # ask if headless
     headless = ask_if_headless()
@@ -451,6 +457,7 @@ def ask_for_number_of_users_to_follow():
 def ask_for_number_of_users_to_unfollow():
     return int(input("How many users do you want me to unfollow? "))
 
+
 def ask_for_follower_limit():
     return int(input("Filter out users with number of followers larger than: "))
 
@@ -477,7 +484,9 @@ def ask_for_filename(
 
 
 def ask_for_list_of_users():
-    return ask_for_filename(message="Write path to file with list of users: ", read=True)
+    return ask_for_filename(
+        message="Write path to file with list of users: ", read=True
+    )
 
 
 def ask_for_tags():
