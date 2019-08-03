@@ -181,14 +181,14 @@ def C_get_users_by_tags():
     tag_crawler = InstaTagPostCrawler(tags, num_of_posts=num * 2, driver=driver)
     posts = tag_crawler.crawl()
 
-    post_to_user_converter = InstaPostToUserConverter(posts, driver, follower_limit=follower_limit)
+    post_to_user_converter = InstaPostToUserConverter(posts, driver, follower_limit=follower_limit, num_requested=num)
     users = post_to_user_converter.convert()
 
     if len(users) >= num:
         users = users[:num]
     else:
         print(
-            f"I only found {len(users)} users for given tags. Seems like too many posts were posted by 1 user. Try different tags. Sorry :("
+            f"I only found {len(users)} users for given tags. Seems like too many posts were posted by 1 user or your follower limit is too strict. Try different/more tags or increse the follower limit. Sorry :("
         )
 
     # save to file

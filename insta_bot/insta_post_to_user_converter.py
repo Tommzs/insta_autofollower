@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
-import time, argparse, ast, re
+import time, argparse, ast, re, random
 
 if __name__ == "__main__":
     import element_classes as el
@@ -11,24 +11,27 @@ else:
 
 
 class InstaPostToUserConverter:
-    def __init__(self, posts, driver, follower_limit=0):
+    def __init__(self, posts, driver, follower_limit=0, num_requested=0):
         self.posts = posts
         self.driver = driver
         self.follower_limit = follower_limit
+        self.num_requested = num_requested
 
     def convert(self):
         users = set()
+        random.shuffle(self.posts)
         for post in self.posts:  # get posts for each tag
             user = self.get_user(post)
             if user is not None:
                 if self.follower_limit > 0 and self.get_follower_count(user) <= self.follower_limit:
                     users.add(user)
+            if self.num_requested > 0 and len(users) >= self.num_requested:
+                break
         return list(users)
 
     def get_user(self, post):
         driver = self.driver  # get driver
         driver.get(post)  # open page with post
-        time.sleep(c.LOAD_WAIT)  # wait for post to load
         user = None
 
         try:
@@ -43,12 +46,11 @@ class InstaPostToUserConverter:
     def get_follower_count(self, user):
         driver = self.driver  # get driver
         driver.get(f"https://www.instagram.com/{user}/")  # open user
-        time.sleep(c.LOAD_WAIT)
 
         follower_count = -1
         try:
             follower_count = int(re.sub('[^0-9]','', driver.find_elements_by_class_name(el.USER_FOLLOWERS_COUNT)[1].get_attribute('title')))
-        except [NoSuchElementException, ValueError] as _:
+        except (NoSuchElementException, ValueError) as _:
             print(
                 f"Follower count for user {user} was not possible to retrieve. There might be issues with your internet connections."
             )

@@ -38,7 +38,7 @@ class InstaUserFollower:
             if success:
                 followed.append(user)
 
-            time.sleep(c.LIKE_FOLLOW_WAIT)
+            time.sleep(c.FOLLOW_WAIT)
 
         return followed
 

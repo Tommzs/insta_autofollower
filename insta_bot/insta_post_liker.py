@@ -30,7 +30,7 @@ class InstaPostLiker:
                     f"Post {post} does not exist or there are issues with your connection."
                 )
 
-            time.sleep(c.LIKE_FOLLOW_WAIT)
+            time.sleep(c.LIKE_WAIT)
 
 
 def read_args():
