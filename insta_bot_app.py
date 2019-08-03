@@ -286,7 +286,7 @@ def E_follow_users_from_list():
 
     # save followed users to file
     list_to_csv(filename, list_to_save=followed)
-    print("Save all sucessfully followed users to {filename}.")
+    print(f"Saved all sucessfully followed users to {filename}.")
 
     return f"All done. Thanks for using my services! :)"
 
