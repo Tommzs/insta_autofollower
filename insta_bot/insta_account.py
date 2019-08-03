@@ -12,16 +12,18 @@ class InstaAccount:
         )
 
     def get_users_that_I_follow(self):
-        return set(self.profile_data.get_followers())
-
-    def get_users_that_follow_me(self):
         return set(self.profile_data.get_followees())
 
+    def get_users_that_follow_me(self):
+        return set(self.profile_data.get_followers())
+
     def get_users_that_I_follow_but_dont_follow_me(self):
+        followees = self.get_users_that_I_follow()
+        following = self.get_users_that_follow_me()
         return [
             user.username
             for user in (
-                self.get_users_that_I_follow() - self.get_users_that_follow_me()
+                followees - following
             )
         ]
 

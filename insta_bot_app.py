@@ -203,9 +203,6 @@ def C_get_users_by_tags():
 
 
 def D_get_users_followed_minus_following():
-    print(
-        "Currently I am only able to obtain 99 followers/following at once, thus the list will not be complete."
-    )
     # get username and password
     username = ask_for_username()
     password = ask_for_password()
