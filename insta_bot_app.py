@@ -5,6 +5,7 @@ from insta_bot.insta_logger import InstaLogger
 from insta_bot.insta_post_liker import InstaPostLiker
 from insta_bot.insta_user_follower import InstaUserFollower
 from insta_bot.insta_user_unfollower import InstaUserUnfollower
+from insta_bot.insta_account import InstaAccount
 from insta_bot import constants as c
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -31,11 +32,13 @@ def execute_selection(selection):
         elif selection == 3:
             status = C_get_users_by_tags()
         elif selection == 4:
-            status = D_like_posts_by_users()
+            status = D_get_users_followed_minus_following()
         elif selection == 5:
-            status = E_follow_users_from_list()
+            status = E_like_posts_by_users()
         elif selection == 6:
-            status = F_unfollow_users()
+            status = F_follow_users_from_list()
+        elif selection == 7:
+            status = G_unfollow_users()
     else:
         status = f"Sorry I dont know what option ({selection}) is. :(."
     return status
@@ -197,7 +200,27 @@ def C_get_users_by_tags():
     return f"I have saved the users to {filename} for you."
 
 
-def D_like_posts_by_users():
+def D_get_users_followed_minus_following():
+    print("Currently I am only able to obtain 99 followers/following at once, thus the list will not be complete.")
+    # get username and password
+    username = ask_for_username()
+    password = ask_for_password()
+
+    # ask for filename
+    filename = ask_for_filename()
+
+    print("Lets get into it...")
+
+    user_account = InstaAccount(username, password)
+    users = user_account.get_users_that_I_follow_but_dont_follow_me()
+
+    # save to file
+    list_to_csv(filename, users)
+
+    return f"I have saved the users to {filename} for you."
+
+
+def E_like_posts_by_users():
     # get username and password
     username = ask_for_username()
     password = ask_for_password()
@@ -252,7 +275,7 @@ def D_like_posts_by_users():
     return f"All done. Lets do this again sometimes..."
 
 
-def E_follow_users_from_list():
+def F_follow_users_from_list():
     # get username and password
     username = ask_for_username()
     password = ask_for_password()
@@ -291,7 +314,7 @@ def E_follow_users_from_list():
     return f"All done. Thanks for using my services! :)"
 
 
-def F_unfollow_users():
+def G_unfollow_users():
     print(
         "Unfollowing users is mainly using list that is created by me when you want me to follow users."
     )

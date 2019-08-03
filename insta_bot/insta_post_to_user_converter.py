@@ -35,7 +35,7 @@ class InstaPostToUserConverter:
         user = None
 
         try:
-            user = driver.find_element_by_class_name(el.POST_USER_BUTTON_CLASS).text
+            user = driver.find_element_by_class_name(el.POST_USER_BUTTON).text
         except NoSuchElementException as _:
             print(
                 f"Post {post} does not exist or there are issues with your connection."
@@ -49,7 +49,7 @@ class InstaPostToUserConverter:
 
         follower_count = -1
         try:
-            follower_count = int(re.sub('[^0-9]','', driver.find_elements_by_class_name(el.USER_FOLLOWERS_COUNT)[1].get_attribute('title')))
+            follower_count = int(re.sub('[^0-9]','', driver.find_elements_by_class_name(el.USER_FOLLOWERS_COUNT_LABEL)[1].get_attribute('title')))
         except (NoSuchElementException, ValueError) as _:
             print(
                 f"Follower count for user {user} was not possible to retrieve. There might be issues with your internet connections."

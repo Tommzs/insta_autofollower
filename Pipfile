@@ -9,6 +9,7 @@ pylint = "*"
 [packages]
 selenium = "*"
 black = "==18.9b0"
+instaloader = "*"
 
 [requires]
 python_version = "3.7"

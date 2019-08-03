@@ -27,7 +27,7 @@ class InstaUserUnfollower:
             time.sleep(c.LOAD_WAIT)
 
             try:
-                driver.find_element_by_class_name(el.USER_FOLLOW_BUTTON_CLASS).click()
+                driver.find_element_by_class_name(el.USER_FOLLOW_BUTTON).click()
             except NoSuchElementException as _:
                 print(
                     f"User {user} does not exist or there are issues with your connection."
@@ -38,7 +38,7 @@ class InstaUserUnfollower:
 
             try:
                 driver.find_element_by_class_name(
-                    el.UNFOLLOW_UNFOLLOW_BUTTON_CLASS
+                    el.UNFOLLOW_UNFOLLOW_BUTTON
                 ).click()
             except NoSuchElementException as _:
                 print(

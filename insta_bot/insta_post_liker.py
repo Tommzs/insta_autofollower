@@ -24,7 +24,7 @@ class InstaPostLiker:
             time.sleep(c.LOAD_WAIT)
 
             try:
-                driver.find_element_by_class_name(el.POST_LIKE_BUTTON_CLASS).click()
+                driver.find_element_by_class_name(el.POST_LIKE_BUTTON).click()
             except NoSuchElementException as _:
                 print(
                     f"Post {post} does not exist or there are issues with your connection."
