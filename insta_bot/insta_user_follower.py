@@ -1,5 +1,5 @@
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
 import time, argparse, ast
 
 if __name__ == "__main__":
@@ -18,12 +18,19 @@ class InstaUserFollower:
         self.driver = driver
 
     def follow(self):
+        maxTries = 5
         driver = self.driver  # get driver
         followed = []
-        success = True
 
         for user in self.user_list:
-            driver.get(f"https://www.instagram.com/{user}/")  # open user
+            success = True
+            for tryNum in range(maxTries):
+                try:
+                    driver.get(f"https://www.instagram.com/{user}/")  # open user
+                    break
+                except WebDriverException as _:
+                    print(f"Loading user page of {user} failed. Retrying {tryNum+1}/{maxTries} after 2 minutes of waiting.")
+                    time.sleep(120)
 
             time.sleep(c.LOAD_WAIT)
 
@@ -37,8 +44,8 @@ class InstaUserFollower:
 
             if success:
                 followed.append(user)
-
-            time.sleep(c.FOLLOW_WAIT)
+                print(f"({len(followed)}) User {user} followed successfully.")
+                time.sleep(c.FOLLOW_WAIT)  
 
         return followed
 

@@ -35,6 +35,7 @@ class InstaPostToUserConverter:
     def get_user(self, post):
         driver = self.driver  # get driver
         driver.get(post)  # open page with post
+        time.sleep(c.LOAD_WAIT)  # wait for post to load
         user = None
 
         try:
@@ -49,6 +50,7 @@ class InstaPostToUserConverter:
     def get_follower_count(self, user):
         driver = self.driver  # get driver
         driver.get(f"https://www.instagram.com/{user}/")  # open user
+        time.sleep(c.LOAD_WAIT)
 
         follower_count = -1
         try:
@@ -61,7 +63,7 @@ class InstaPostToUserConverter:
                     ].get_attribute("title"),
                 )
             )
-        except (NoSuchElementException, ValueError) as _:
+        except (IndexError, NoSuchElementException, ValueError) as _:
             print(
                 f"Follower count for user {user} was not possible to retrieve. There might be issues with your internet connections."
             )

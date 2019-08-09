@@ -297,6 +297,16 @@ def F_follow_users_from_list():
 
     print("Thanks :) Lets follow some ppl...")
 
+    user_account = InstaAccount(username, password)
+    users_followed = set([
+        user.username
+        for user in (
+            user_account.get_users_that_I_follow()
+        )
+    ])
+
+    users = users-users_followed
+
     # set driver
     driver = get_driver(headless)
 
@@ -307,7 +317,7 @@ def F_follow_users_from_list():
         return f"Wrong username or password."
 
     # follow users
-    user_follower = InstaUserFollower(user_list=users, driver=driver)
+    user_follower = InstaUserFollower(user_list=list(users), driver=driver)
     followed = user_follower.follow()
 
     # save followed users to file
@@ -518,11 +528,11 @@ def ask_if_unfollow_all():
 
 
 def read_users_from_file(filename):
-    users = []
+    users = set()
     with open(filename, "r") as readFile:
         reader = csv.reader(readFile, delimiter="\n")
         for user in reader:
-            users.extend(user)
+            users.update(user)
     return users
 
 
