@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
-import time, argparse, ast
+import time, argparse, ast, random
 
 if __name__ == "__main__":
     import element_classes as el
@@ -45,7 +45,7 @@ class InstaUserFollower:
             if success:
                 followed.append(user)
                 print(f"({len(followed)}) User {user} followed successfully.")
-                time.sleep(c.FOLLOW_WAIT)  
+                time.sleep(c.FOLLOW_WAIT*random.random())  
 
         return followed
 
